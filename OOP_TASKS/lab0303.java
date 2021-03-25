@@ -106,8 +106,8 @@ class LAB3{
 		//생성자 앞에는 new를 붙인다
 		
 		Date d1 = dateFormat.parse("2016-03-03"); //소스값이 데이트
-		Date d2 = dateFormat.parse("2016-03-07");
-		Date d3 = dateFormat.parse("2016-03-05");//Date객체
+		Date d2 = dateFormat.parse("2016-03-08");
+		Date d3 = dateFormat.parse("2011-03-05");//Date객체
 		Date d4 = dateFormat.parse("2014-03-05");//Date객체
 		Date d5 = dateFormat.parse("2012-03-05");//Date객체
 	
@@ -122,35 +122,68 @@ class LAB3{
 		{
 			carArray[i].printInfo();
 		}
+		System.out.println("---------- ");
 		carArray[0].setStatus(StatusType.checkedOut);
 		System.out.println();
 		for(int i=0;i<5;i++)
 		{
 			carArray[i].printInfo();
 		}
+		System.out.println("---------- ");
+		Date temp;
+		Car m;
 		
+		if(d1.before(d2)) {
+			m=carArray[0];
+			carArray[0]=carArray[1];
+			carArray[1]=m;
+			temp=d1;
+			d1=d2;
+			d2=temp;
+		}
 		
-		Arrays.sort(carArray);
-		for(int i=0;i<5;i++)
-		{
-			char temp;
-				if(carArray[i].getTime()<carArray[i+1].getTime()) {
-					temp=carArray[i];
-					carArray[i]=carArray[i+1];
-				}
-					
-							
+	 if(d2.before(d3)) {
+		 m=carArray[1];
+		 carArray[1]=carArray[2];
+		 carArray[2]=m;
+			temp=d2;
+			d2=d3;
+			d3=temp;
 			
 		}
+	 
+	 if(d3.before(d4)) {
+		 m=carArray[2];
+		 carArray[2]=carArray[3];
+		 carArray[3]=m;
+			temp=d3;
+			d3=d4;
+			d4=temp;
+			
+		}
+	 
+	 if (d4.before(d5)) {
+		 m=carArray[3];
+		 carArray[3]=carArray[4];
+		carArray[4]=m;
+			temp=d4;
+			d4=d5;
+			d5=temp;
+			
+		}
+	 
+		
 		for(int i=0;i<5;i++)
 		{
 			carArray[i].printInfo();
 		}
 		
-		
 				
-			}
-		
-		
 	}
+}
+		
+		
 	
+	
+	
+
