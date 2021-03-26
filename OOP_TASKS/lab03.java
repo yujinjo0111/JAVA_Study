@@ -6,19 +6,18 @@ enum StatusType{available, checkedOut,inService,discorded,sold}
 
 
 	class Car{
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		//String dateFormatStringTime;
-		//dateFormatStringTime = date
-		int carID;
-		StatusType status;
-		Date datePurchased;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); //데이트 포맷
+	
+		int carID; //car id를 입력해주기 위한 변수 선언
+		StatusType status; //차 상태
+		Date datePurchased; //차 구매일
 		int mileage;
 		//클래스랑 이름이 같으면 생성자임
 		 Car(Date d,int m){
 			Random generator= new Random();
 			
-			carID = 1000 +generator.nextInt(9000); //1000~9999
-			status = StatusType.available;
+			carID = 1000 +generator.nextInt(9000); //1000~9999까지 해서 4자리 수 car id생성
+			status = StatusType.available; //available상태로 초기화
 			datePurchased=d;
 			mileage=m;
 			datePurchased.getTime();
@@ -28,7 +27,7 @@ enum StatusType{available, checkedOut,inService,discorded,sold}
 			if(m<1)
 			{
 				Scanner scanner= new Scanner(System.in);
-				while(mileage<1) {
+				while(mileage<1) {  //마일리지는 양수이어서 하므로 1보다 작을시 예외처리
 					System.out.println("mileage error! Please reenter the mileage more than 0");
 					mileage= scanner.nextInt();
 					scanner.close();
@@ -41,7 +40,7 @@ enum StatusType{available, checkedOut,inService,discorded,sold}
 			void setMileage(int x) {
 			if (x>0) //주행거리 입력이 0이상으로 제대로 된 경우 실행
 				mileage+=x;
-				else//주행거리가 0보다 작은 값으로 입력이 될때 실행
+				else//주행거리가 0보다 작은 값으로 입력이 될때 오류 띄우고 다시 실행
 				{
 				Scanner scanner=new Scanner(System.in);
 				while(mileage<1)
@@ -58,7 +57,7 @@ enum StatusType{available, checkedOut,inService,discorded,sold}
 		
 			
 		
-			 //마일리지 값에 탓다고 한거 계속 더해준다
+			 
 			
 			void checkID(int carID[]) //반복되는 carID형성하지 않도록 함 
 			{
