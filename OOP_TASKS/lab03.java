@@ -1,7 +1,7 @@
 import java.util.*;//*이 모든문자를 의미
 import java.text.SimpleDateFormat;
 import java.text.*;
-enum StatusType{available, checkedOut,inService,discorded,sold}
+enum StatusType{available, checkedOut,inService,discorded,sold}//차 상태 
 
 
 
@@ -83,7 +83,7 @@ enum StatusType{available, checkedOut,inService,discorded,sold}
 					//setStatus(sold)
 		}
 	
-	public void printInfo() {
+	public void printInfo() { //차 정보 출력
 		System.out.println("CarId : "+carID);
 		System.out.println("Status : "+status);
 		System.out.println("DataPurchased : "+dateFormat.format(datePurchased));
