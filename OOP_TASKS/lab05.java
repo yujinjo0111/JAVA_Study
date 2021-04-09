@@ -39,7 +39,7 @@ import java.text.*;
             if (creditPoints < 1)//포인트 정수형,  포인트가 음수가 될 수는 없다는 예외처리
             {
                 Scanner scanner = new Scanner(System.in);
-                while (creditPoints < 0) {
+                while (creditPoints < 0) { //포인트가 0포인트일때 에러처리
                     System.out.println("points error! enter the points more than 0");
                     creditPoints = scanner.nextInt();
                     scanner.close();
@@ -55,7 +55,7 @@ import java.text.*;
             return creditPoints; //가진 포인트 출력
         }
 
-        void addPoints(int rentalFee) { //렌탈 비용에 대한 포인트
+        void addPoints(int rentalFee) { //렌탈 비용에 대한 포인트 적립해주기
             if(this.cStatus==CustomerStatusType.Silver)
                 rentalFee=rentalFee*0;
             else if(this.cStatus==CustomerStatusType.Gold)
@@ -76,19 +76,20 @@ import java.text.*;
             scanner.close();
         }
 
-        void promote(int fee) {
-            if (this.cStatus == CustomerStatusType.Silver) { //렌탈비용 지불에 대한 등급 변화
-                if ((fee >= 100000))
-                    this.cStatus = CustomerStatusType.Gold;
-            } else if (this.cStatus == CustomerStatusType.Gold) {
-                if ((fee >= 500000))
-                    this.cStatus = CustomerStatusType.Diamond;
+        void promote(){ //fee에 따라 등급을 올려주는 기능
+            int totalCarRentalFee=0;
+            for(int i=0;i<Rental.totalRentals;i++){
+                if(Rental.rentalList.get(i).customer.customerID==this.customerID)
+                    totalCarRentalFee+=Rental.rentalList.get(i).fee;
 
             }
-
+            if(totalCarRentalFee>=500000)
+                cStatus=CustomerStatusType.Diamond;
+            else if(totalCarRentalFee>=100000)
+                cStatus= CustomerStatusType.Gold;
         }
 
-        void printInfo() {
+        void printInfo() { //정보를 출력해주는 기능
             System.out.println("CustomerID :" + this.customerID);
             System.out.println("Name:" + this.name);
             System.out.println("DriverLicense :" + this.driverLicense);
@@ -98,147 +99,137 @@ import java.text.*;
 
         }
     }
-class Rental {
+class Rental{
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    int rentalID;
-    Customer customer;
-    Car car;
-    Date dateOut;
-    Date dateIn;
-    int fee = 0;
-    public static ArrayList<Rental> rentalList = new ArrayList<>();
-    static int totalRentals = 0;
+int rentalID; //렌탈아이디
+Customer customer; //고객
+Car car;
+Date dateOut;
+Date dateIn;
+int fee=0;
+public static ArrayList<Rental> rentalList=new ArrayList<>();
+static int totalRentals=0;
 
-    static Random random = new Random();
+static Random random= new Random();
+Rental(Customer cust, Car ccar, Date out, int Fee ){
+    rentalID=random.nextInt(900000)+100000; //6자리 100000~999999
+    customer=cust;
+    car=ccar;
 
-    Rental(Customer cust, Car ccar, Date out, int Fee) {
-        rentalID = random.nextInt(900000) + 100000; //6자리 100000~999999
-        customer = cust;
-        car = ccar;
+    dateOut=out;
+    dateIn=null;
+    fee=Fee;
+    this.totalRentals+=1;
+    rentalList.add(this);
 
-        dateOut = out;
-        dateIn = null;
-        fee = Fee;
-        this.totalRentals += 1;
-        rentalList.add(this);
 
+
+}
+void returnCar(Date in, int mileage){
+    dateIn=in;
+    car.addMileage(mileage);
+    customer.addPoints(fee);
+
+}
+//Customer getCustomer
+    int getFee(){
+    return fee;
+    }
+    void printInfo(){
+    System.out.println("RentalID:"+rentalID);
+    customer.printInfo();
+    car.printInfo();
+
+    System.out.println("DateOut:"+dateFormat.format(dateOut));
+        if (dateIn!=null) //만약에 datein이 비어있는, 반납이 안되어있는  경우에 필요한 조건문
+    System.out.println("DateIn:"+dateFormat.format(dateIn));
+        System.out.println("Fee:"+fee);
+        System.out.println("=============");
 
     }
-
-    void returnCar(Date in, int mileage) {
-        dateIn = in;
-        car.addMileage(mileage);
-        customer.addPoints(fee);
-
     }
+class Car {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    //Customer getCustomer
-    int getFee() {
-        return fee;
-    }
+    int carID; //차 번호를 받기 위한 변수 선언
+    StatusType status; //차 상태를 표시하기 위해 선언
+    Date datePurchased; //차 구매날짜를 표기하기 위해 선언
+    int mileage; //마일리지 값을 정수형으로 선언
+    public static ArrayList<Car> carList = new ArrayList<>();//새로 추가
 
-    void printInfo() {
-        System.out.println("RentalID:" + rentalID);
-        customer.printInfo();
-        car.printInfo();
-        System.out.println("DateOut:" + dateFormat.format(dateOut));
-        System.out.println("DateIn:" + dateFormat.format(dateIn));
-        System.out.println("Fee:" + fee);
+    public Car(int id, Date d, int m) {
+        Random generator = new Random();
 
-    }
-
-    void printInfoLater() {
-        System.out.println("RentalID:" + rentalID);
-        customer.printInfo();
-        car.printInfo();
-        System.out.println("DateOut:" + dateFormat.format(dateOut));
-        System.out.println("DateIn:" + dateFormat.format(dateIn));
-        System.out.println("Fee:" + fee);
-
-    }
-
-    class Car {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        int carID; //차 번호를 받기 위한 변수 선언
-        StatusType status; //차 상태를 표시하기 위해 선언
-        Date datePurchased; //차 구매날짜를 표기하기 위해 선언
-        int mileage; //마일리지 값을 정수형으로 선언
-        public static ArrayList<Car> carList = new ArrayList<>();//새로 추가
-
-        public Car(int id, Date d, int m) {
-            Random generator = new Random();
-
-            carID = 1000 + generator.nextInt(9000); //1000~9999까지 4자리 수를 만들어냄
-            for (int i = 0; i < carList.size(); i++) { //자동차 아이디 중복검사 기능 구현
-                for (int j = 0; j < carList.size(); j++) {
-                    if (i == j) {
-                    } else if (carList.get(j).equals(carList.get(i))) {
-                        carList.remove(j);
-                    }
-                }
-                carList.add(this);
-            }
-            status = StatusType.available; //초기값을 available로 설정함
-            datePurchased = d;
-            setMileage(m);
-            mileage = m;
-
-            if (m < 1)//마일리지는 정수형,  운행을 했으면0보다 크기 때문에 예외처리
-            {
-                Scanner scanner = new Scanner(System.in);
-                while (mileage < 1) {
-                    System.out.println("mileage error! Please reenter the mileage more than 0");
-                    mileage = scanner.nextInt();
-                    scanner.close();
+        carID = 1000 + generator.nextInt(9000); //1000~9999까지 4자리 수를 만들어냄
+        for (int i = 0; i < carList.size(); i++) { //자동차 아이디 중복검사 기능 구현
+            for (int j = 0; j < carList.size(); j++) {
+                if (i == j) {
+                } else if (carList.get(j).equals(carList.get(i))) {
+                    carList.remove(j);
                 }
             }
             carList.add(this);
-
-
         }
+        status = StatusType.available; //초기값을 available로 설정함
+        datePurchased = d;
+        setMileage(m);
+        mileage = m;
 
-        void setMileage(int x) {
-            if (x > 0)
-                mileage += x;
-            else {
-                Scanner scanner = new Scanner(System.in);
-                while (mileage < 1) { //마일리지 0보다 작으면 예외처리 해줌
-                    System.out.println("mileage error! reenter the mileage");
-                    x = scanner.nextInt();
-                }
-                mileage += x;
+        if (m < 1)//마일리지는 정수형,  운행을 했으면0보다 크기 때문에 예외처리
+        {
+            Scanner scanner = new Scanner(System.in);
+            while (mileage < 1) {
+                System.out.println("mileage error! Please reenter the mileage more than 0");
+                mileage = scanner.nextInt();
                 scanner.close();
             }
         }
+        carList.add(this);
 
-        void addMileage(int x) {
-            if (x > 0)
-                mileage += x;
-            else {
-                Scanner scanner = new Scanner(System.in);
-                while (mileage < 1) {
-                    System.out.println("mileage error! Please enter the mileage again!");
-                    x = scanner.nextInt();
 
-                }
-                mileage += x;
-                scanner.close();
+    }
+
+    void setMileage(int x) {
+        if (x > 0)
+            mileage += x;
+        else {
+            Scanner scanner = new Scanner(System.in);
+            while (mileage < 1) { //마일리지 0보다 작으면 예외처리 해줌
+                System.out.println("mileage error! reenter the mileage");
+                x = scanner.nextInt();
+            }
+            mileage += x;
+            scanner.close();
+        }
+    }
+    void addMileage(int x){
+        if(x>0)
+            mileage+=x;
+        else
+        {
+            Scanner scanner= new Scanner(System.in);
+            while (mileage<1){
+                System.out.println("mileage error! Please enter the mileage again!");
+                x=scanner.nextInt();
 
             }
-        }
+            mileage+=x;
+            scanner.close();
 
-        void setStatus(StatusType s) {
-            status = s;
         }
+    }
 
-        public void printInfo() { //차들의 정보를 출력하는 함수
-            System.out.println("CarId : " + carID);
-            System.out.println("Status : " + status);
-            System.out.println("DataPurchased : " + dateFormat.format(datePurchased));
-            System.out.println("Mileage" + mileage);
-            System.out.println("");
-        }
+    void setStatus(StatusType s) {
+        status = s;
+    }
+
+    public void printInfo() { //차들의 정보를 출력하는 함수
+        System.out.println("CarId : " + carID);
+        System.out.println("Status : " + status);
+        System.out.println("DataPurchased : " + dateFormat.format(datePurchased));
+        System.out.println("Mileage" + mileage);
+        System.out.println("");
+    }
 
 
         public static void main(String[] args) throws ParseException {
@@ -260,22 +251,22 @@ class Rental {
             carList.add(car2);
             carList.add(car3);
 
-            System.out.println("=====Printing Customer Information====");
+            System.out.println("=====Printing Customer Information===="); //모든 고객정보 출력
             for (Customer customer : customerList) {
                 customer.printInfo();
                 System.out.println();
 
             }
-            System.out.println("=====Printing Car Information====");
+            System.out.println("=====Printing Car Information====");//모든 차의 정보 출력
             for (Car car : carList) {
                 car.printInfo();
                 System.out.println();
 
             }
             System.out.println();
-            ArrayList<Rental> rentalList = new ArrayList<Rental>();
-            Rental rental1 = new Rental(customer1, car1, dateFormat.parse("2020-01-01"), 500000);
-            Rental rental2 = new Rental(customer2, car2, dateFormat.parse("2020-02-01"), 2000000);
+            ArrayList<Rental> rentalList= new ArrayList<Rental>();
+            Rental rental1= new Rental(customer1, car1, dateFormat.parse("2020-01-01"),500000);
+            Rental rental2= new Rental(customer2, car2,  dateFormat.parse("2020-01-01"),2000000);
 
             rentalList.add(rental1);
             rentalList.add(rental2);
@@ -283,51 +274,53 @@ class Rental {
             car1.setStatus(StatusType.checkedOut);
             car2.setStatus(StatusType.checkedOut);
 
-            System.out.println("=====rental information=====");
-            for (Rental rental : rentalList) {
+            System.out.println("=====rental information=====");//렌탈을 한 정보들을 출력
+            for(Rental rental : rentalList){
                 rental.printInfo();
                 System.out.println();
 
             }
             System.out.println();
 
-            rental1.returnCar(dateFormat.parse("2020-01-01"), 10000);
-            rental2.returnCar(dateFormat.parse("2020-01-12"), 10000);
+            rental1.returnCar( dateFormat.parse("2020-01-08"),10000);//차를 반납해줌
+            rental2.returnCar( dateFormat.parse("2020-01-12"),10000);
 
             car1.setStatus(StatusType.available);
             car2.setStatus(StatusType.available);
 
-            customer1.promote(500000);
-            customer2.promote(2000000);
+            customer1.promote(); //등급을 올려줌
+            customer2.promote();
 
-            System.out.println("====반납 후 고객 정보 출력====");
-            for (Customer customer : customerList) {
+            System.out.println("====반납 후 고객 정보 출력===="); //고객1,2 차 반납 후의 정보를 출력
+            for(Customer customer: customerList){
                 customer.printInfo();
-                System.out.println();
+                System.out.println("==============");
 
             }
             System.out.println();
 
-            Rental rental3 = new Rental(customer1, car1, dateFormat.parse("2020-01-04"), 5000000);
+            Rental rental3= new Rental(customer1, car1, dateFormat.parse("2020-01-04"),5000000); //고객1의 렌탈
             rentalList.add(rental3);
             car1.setStatus(StatusType.checkedOut);
+            customer1.promote();
 
-            rental3.returnCar(dateFormat.parse("2020-03-03"), 1000);
+            rental3.returnCar( dateFormat.parse("2020-03-03"),1000);
             car1.setStatus(StatusType.available);
             System.out.println("customer1의 추가 렌탈과 반납");
             customer1.printInfo();
             System.out.println();
 
 
-            System.out.println("=====Printing Customer Information====");
-            for (Customer customer : customerList) {
-                customer.printInfo();
+            System.out.println("=====Printing Customer1 Information===="); //반납 후 고객1의 정보 출력
+
+
+                customer1.printInfo();
                 System.out.println();
 
-            }
+
 
         }
     }
-}
+
 
 
