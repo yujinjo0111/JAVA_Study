@@ -1,0 +1,52 @@
+package com.company;
+
+import java.io.InterruptedIOException;
+import java.util.*;
+import java.text.*;
+
+class DateDisplayer extends Thread{
+    public void run() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        for (int i = 0; i < 7; i++) {
+
+            System.out.println(this.getName() + " " + i + new Date());
+
+
+            try {
+                Thread.sleep((int) 2000);
+
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+    }
+
+   class DateDisplayerRunnable implements Runnable {
+       public void run() {
+           for (int i = 0; i < 7; i++) {
+               System.out.println(Thread.currentThread().getName() + new Date());
+
+               try {
+                   Thread.sleep((int) 2000);
+
+               } catch (InterruptedException e) {
+               }
+           }
+       }
+   }
+public class Main {
+    public static void main(String[] args)throws InterruptedException {
+        System.out.println("Test Program 1 using Thread class");
+        DateDisplayer new1= new DateDisplayer();
+        DateDisplayer new2= new DateDisplayer();
+new1.start();
+new2.start();
+        System.out.println("Test Program 2 using Runnable");
+        Runnable r=new DateDisplayerRunnable();
+        Thread new3=new Thread(r);
+        Runnable r1=new DateDisplayerRunnable();
+        Thread new4=new Thread(r1);
+new3.start();
+new4.start();
+    }
+}
